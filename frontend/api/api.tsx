@@ -16,7 +16,7 @@ export interface MedicationResponse {
 }
 
 // Set base URL for the backend API
-const API_BASE_URL = "http://localhost:8000"; // 修改为你的 FastAPI 后端地址
+const API_BASE_URL = "http://localhost:8000"; 
 
 // Create an axios instance
 const api = axios.create({
