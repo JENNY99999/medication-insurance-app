@@ -10,46 +10,46 @@ import {
 } from "react-native";
 
 export default function Query() {
-  const [codeQuery, setCodeQuery] = useState(""); // 存储用户输入的药品编号
-  const [nameQuery, setNameQuery] = useState(""); // 存储用户输入的药品名称
-  const [medicationData, setMedicationData] = useState(null); // 存储从后端获取的药品数据
-  const [loading, setLoading] = useState(false); // 加载状态
+  const [codeQuery, setCodeQuery] = useState(""); // Stores user input for medication code
+  const [nameQuery, setNameQuery] = useState(""); // Stores user input for medication name
+  const [medicationData, setMedicationData] = useState(null); // Stores medication data fetched from the backend
+  const [loading, setLoading] = useState(false); // Loading state
 
-  // 查询药品信息的函数
+  // Function to fetch medication data
   const fetchMedicationData = async () => {
     if (!codeQuery && !nameQuery) {
       Alert.alert("Error", "Please enter either medication code or name.");
       return;
     }
 
-    setLoading(true); // 开始加载
+    setLoading(true); // Start loading
     try {
-      // 清理输入内容
+      // Clean input values
       const cleanedCodeQuery = codeQuery.trim();
       const cleanedNameQuery = nameQuery.trim();
 
-      // 构建查询 URL
+      // Build query URL
       let url = new URL("http://127.0.0.1:8000/medications");
 
-      // 如果输入药品编号，则通过 code 查询
+      // Append code to URL if provided
       if (cleanedCodeQuery) {
         url.searchParams.append("code", cleanedCodeQuery);
       }
 
-      // 如果输入药品名称，则通过 name 查询
+      // Append name to URL if provided
       if (cleanedNameQuery) {
         url.searchParams.append("name", cleanedNameQuery);
       }
 
-      // 打印请求 URL 以便调试
+      // Log request URL for debugging
       console.log("Request URL:", url.toString());
 
-      // 发送 GET 请求到后端
+      // Send GET request to the backend
       const response = await fetch(url.toString(), {
         method: "GET",
       });
 
-      // 检查响应是否成功
+      // Check if the response is successful
       if (!response.ok) {
         if (response.status === 404) {
           throw new Error("Medication not found.");
@@ -58,17 +58,17 @@ export default function Query() {
         }
       }
 
-      // 解析响应数据
+      // Parse response data
       const data = await response.json();
-      setMedicationData(data); // 更新药品数据状态
+      setMedicationData(data); // Update medication data state
     } catch (error) {
-      // 处理错误
+      // Handle errors
       Alert.alert("Error", error.message);
       console.error(error);
     } finally {
-      setLoading(false); // 结束加载
-      setCodeQuery(""); // 清空 code 输入框
-      setNameQuery(""); // 清空 name 输入框
+      setLoading(false); // End loading
+      setCodeQuery(""); // Clear code input
+      setNameQuery(""); // Clear name input
     }
   };
 
@@ -76,42 +76,42 @@ export default function Query() {
     <View style={styles.container}>
       <Text style={styles.title}>Medication Insurance Query</Text>
 
-      {/* 输入药品编号 */}
+      {/* Input for medication code */}
       <TextInput
         style={styles.input}
         placeholder="Enter medication code"
         placeholderTextColor="#999"
         value={codeQuery}
-        onChangeText={setCodeQuery} // 更新药品编号查询状态
-        returnKeyType="search" // 按回车显示搜索键
-        onSubmitEditing={fetchMedicationData} // 按回车键触发查询
+        onChangeText={setCodeQuery} // Update code query state
+        returnKeyType="search" // Show search key on keyboard
+        onSubmitEditing={fetchMedicationData} // Trigger query on enter key press
       />
 
-      {/* 输入药品名称 */}
+      {/* Input for medication name */}
       <TextInput
         style={styles.input}
         placeholder="Enter medication name"
         placeholderTextColor="#999"
         value={nameQuery}
-        onChangeText={setNameQuery} // 更新药品名称查询状态
-        returnKeyType="search" // 按回车显示搜索键
-        onSubmitEditing={fetchMedicationData} // 按回车键触发查询
+        onChangeText={setNameQuery} // Update name query state
+        returnKeyType="search" // Show search key on keyboard
+        onSubmitEditing={fetchMedicationData} // Trigger query on enter key press
       />
 
-      {/* 查询按钮 */}
+      {/* Query button */}
       {loading ? (
-        <ActivityIndicator size="large" color="#7C4DFF" /> // 加载中显示旋转图标
+        <ActivityIndicator size="large" color="#7C4DFF" /> // Show spinner while loading
       ) : (
         <View style={styles.buttonContainer}>
           <Button
             title="Query"
             onPress={fetchMedicationData}
-            color="#7C4DFF" // 按钮颜色
+            color="#7C4DFF" // Button color
           />
         </View>
       )}
 
-      {/* 显示查询结果 */}
+      {/* Display query results */}
       {medicationData ? (
         <View style={styles.resultContainer}>
           <Text style={styles.resultText}>
@@ -137,32 +137,32 @@ export default function Query() {
   );
 }
 
-// 样式定义
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F3E5F5", // 浅紫色背景
+    backgroundColor: "#F3E5F5",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "#4A148C", // 深紫色标题
+    color: "#4A148C",
   },
   input: {
     width: "100%",
     height: 50,
-    borderColor: "#D1C4E9", // 浅紫色边框
+    borderColor: "#D1C4E9",
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 20,
-    backgroundColor: "#FFFFFF", // 输入框背景色
+    backgroundColor: "#FFFFFF",
     fontSize: 16,
-    color: "#4A148C", // 深紫色文本
+    color: "#4A148C",
   },
   buttonContainer: {
     width: "50%",
@@ -172,14 +172,14 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: "100%",
     padding: 20,
-    backgroundColor: "#EDE7F6", // 浅紫色背景
+    backgroundColor: "#EDE7F6",
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#D1C4E9", // 浅紫色边框
+    borderColor: "#D1C4E9",
   },
   resultText: {
     fontSize: 16,
     marginBottom: 10,
-    color: "#4A148C", // 深紫色文本
+    color: "#4A148C",
   },
 });
