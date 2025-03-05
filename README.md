@@ -22,6 +22,9 @@ This project provides an API to calculate medication insurance coverage and stor
 ### Backend
 
 - **FastAPI/Python**: A lightweight Python API framework used for building the backend. It is fast, efficient, and supports asynchronous operations for optimal performance.
+### Frontend
+
+- **React Native**: The mobile app frontend is built using React Native, enabling cross-platform mobile development (iOS and Android) with a single codebase.
 
 ### Database
 
@@ -34,8 +37,4 @@ This project provides an API to calculate medication insurance coverage and stor
 ### Chatbot Integration
 
 - **GPT API**: A chatbot powered by the GPT API that interacts with users and helps them with medication insurance coverage queries.
-
-### Frontend
-
-- **React Native**: The mobile app frontend is built using React Native, enabling cross-platform mobile development (iOS and Android) with a single codebase.
 
