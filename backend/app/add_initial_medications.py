@@ -1,9 +1,9 @@
 import requests
 
-# FastAPI 服务器的 URL
+# URL of the FastAPI server
 url = "http://localhost:8000/medications"
 
-# 初始药物数据
+# Initial medication data
 initial_medications = [
     {"code": "M1234", "name": "Aspirin1", "coverage_percentage": 0.8, "deductible": 10.0},
     {"code": "M1235", "name": "Aspirin2", "coverage_percentage": 0.7, "deductible": 12.0},
