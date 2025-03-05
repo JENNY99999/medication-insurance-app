@@ -1,1 +1,0 @@
-# Medication Insurance API
