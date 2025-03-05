@@ -1,23 +1,23 @@
-# 使用 Python 3.9 作为基础镜像
+# Use Python 3.10 as the base image
 FROM python:3.10-slim
 
-# 设置工作目录
+# Set the working directory
 WORKDIR /app
 
-# 复制 requirements.txt 文件
+# Copy the requirements.txt file
 COPY requirements.txt .
 
-# 安装依赖项
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 复制应用代码
+# Copy the application code
 COPY . .
 
-# 暴露端口
+# Expose port 8000
 EXPOSE 8000
 
-# 设置环境变量
+# Set environment variable for unbuffered Python output
 ENV PYTHONUNBUFFERED=1
 
-# 启动 FastAPI 应用
+# Start the FastAPI application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
