@@ -8,24 +8,24 @@ from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
-from transformers import pipeline  # 导入 Hugging Face pipeline
+from transformers import pipeline  # Import Hugging Face pipeline
 
-# 加载 .env 文件
+# Load .env file
 env_path = os.path.join(os.path.dirname(__file__), "../.env")
 print("Loading .env file from:", os.path.abspath(env_path))
 load_dotenv(env_path)
 
-# 打印当前工作目录和 .env 文件路径
+# Print current working directory and .env file path
 print("Current Working Directory:", os.getcwd())
 print(".env File Path:", os.path.abspath(env_path))
 
 # FastAPI instance
 app = FastAPI()
 
-# CORS 中间件配置
+# CORS middleware configuration
 origins = [
-    "http://localhost:8081",  # 允许来自前端开发服务器的请求
-    "http://127.0.0.1:8081",  # 允许来自 localhost 的请求
+    "http://localhost:8081",  # Allow requests from frontend development server
+    "http://127.0.0.1:8081",  # Allow requests from localhost
 ]
 
 app.add_middleware(
@@ -52,7 +52,7 @@ class Medication(Base):
     __tablename__ = "medications"
 
     id = Column(Integer, primary_key=True, index=True)
-    code = Column(String, unique=True, index=True)  # 药物编号
+    code = Column(String, unique=True, index=True)  # Medication code
     name = Column(String, index=True, unique=True)
     coverage_percentage = Column(Float)
     deductible = Column(Float)
@@ -62,14 +62,14 @@ Base.metadata.create_all(bind=engine)
 
 # Pydantic model for request validation
 class MedicationRequest(BaseModel):
-    code: str  # 药物编号
+    code: str  # Medication code
     name: str
     coverage_percentage: float
-    deductible: float  # 必填字段
+    deductible: float  # Required field
 
 # Pydantic model for response
 class MedicationResponse(BaseModel):
-    code: str  # 药物编号
+    code: str  # Medication code
     medication_name: str
     coverage_percentage: float
     deductible: float
@@ -93,10 +93,10 @@ def create_medication(request: MedicationRequest):
 
         # Create new medication
         new_med = Medication(
-            code=request.code,  # 药物编号
+            code=request.code,  # Medication code
             name=request.name,
             coverage_percentage=request.coverage_percentage,
-            deductible=request.deductible  # 必填字段
+            deductible=request.deductible  # Required field
         )
 
         db.add(new_med)
@@ -104,7 +104,7 @@ def create_medication(request: MedicationRequest):
         db.refresh(new_med)
 
         return MedicationResponse(
-            code=new_med.code,  # 药物编号
+            code=new_med.code,  # Medication code
             medication_name=new_med.name,
             coverage_percentage=new_med.coverage_percentage,
             deductible=new_med.deductible,
@@ -112,7 +112,7 @@ def create_medication(request: MedicationRequest):
         )
     except SQLAlchemyError as e:
         db.rollback()
-        print(f"Database error: {e}")  # 打印具体的异常信息
+        print(f"Database error: {e}")  # Print specific exception information
         raise HTTPException(status_code=500, detail="Database error")
     finally:
         db.close()
@@ -133,15 +133,15 @@ def update_medication(medication_id: int, request: MedicationRequest):
                 raise HTTPException(status_code=400, detail="Medication with the same code already exists")
 
         # Update medication fields
-        medication.code = request.code  # 更新药物编号
+        medication.code = request.code  # Update medication code
         medication.name = request.name
         medication.coverage_percentage = request.coverage_percentage
-        medication.deductible = request.deductible  # 必填字段
+        medication.deductible = request.deductible  # Required field
 
         db.commit()
 
         return MedicationResponse(
-            code=medication.code,  # 药物编号
+            code=medication.code,  # Medication code
             medication_name=medication.name,
             coverage_percentage=medication.coverage_percentage,
             deductible=medication.deductible,
@@ -149,7 +149,7 @@ def update_medication(medication_id: int, request: MedicationRequest):
         )
     except SQLAlchemyError as e:
         db.rollback()
-        print(f"Database error: {e}")  # 打印具体的异常信息
+        print(f"Database error: {e}")  # Print specific exception information
         raise HTTPException(status_code=500, detail="Database error")
     finally:
         db.close()
@@ -168,11 +168,11 @@ def delete_medication(medication_id: int):
 
         return {
             "detail": "Medication deleted successfully",
-            "code": medication.code  # 返回被删除药物的编号
+            "code": medication.code  # Return the code of the deleted medication
         }
     except SQLAlchemyError as e:
         db.rollback()
-        print(f"Database error: {e}")  # 打印具体的异常信息
+        print(f"Database error: {e}")  # Print specific exception information
         raise HTTPException(status_code=500, detail="Database error")
     finally:
         db.close()
@@ -186,10 +186,10 @@ def get_medication(
     db = SessionLocal()
     try:
         if code:
-            # 不区分大小写查询
+            # Case-insensitive query
             medication = db.query(Medication).filter(func.lower(Medication.code) == func.lower(code)).first()
         elif name:
-            # 不区分大小写查询
+            # Case-insensitive query
             medication = db.query(Medication).filter(func.lower(Medication.name) == func.lower(name)).first()
         else:
             raise HTTPException(status_code=400, detail="Either code or name must be provided")
@@ -198,7 +198,7 @@ def get_medication(
             raise HTTPException(status_code=404, detail="Medication not found")
 
         return MedicationResponse(
-            code=medication.code,  # 药物编号
+            code=medication.code,  # Medication code
             medication_name=medication.name,
             coverage_percentage=medication.coverage_percentage,
             deductible=medication.deductible,
@@ -206,16 +206,16 @@ def get_medication(
         )
     except SQLAlchemyError as e:
         db.rollback()
-        print(f"Database error: {e}")  # 打印具体的异常信息
+        print(f"Database error: {e}")  # Print specific exception information
         raise HTTPException(status_code=500, detail="Database error")
     finally:
         db.close()
 
-# 定义请求体模型
+# Define request body model
 class ChatRequest(BaseModel):
-    message: str  # 用户输入的消息
+    message: str  # User input message
 
-# 加载 GPT-2 模型
+# Load GPT-2 model
 print("Loading GPT-2 model...")
 try:
     pipe = pipeline("text-generation", model="openai-community/gpt2")
@@ -228,17 +228,17 @@ except Exception as e:
 @app.post("/chat")
 async def chat(request: ChatRequest):
     try:
-        print("Received chat request:", request.message)  # 打印用户输入
+        print("Received chat request:", request.message)  # Print user input
 
-        # 使用模型生成回复
+        # Generate response using the model
         response = pipe(request.message, max_length=50)
 
-        # 提取生成的文本
+        # Extract generated text
         reply = response[0].get("generated_text", "Sorry, I didn't understand that.")
 
         return {"reply": reply}
     except Exception as e:
-        print(f"Error in /chat endpoint: {e}")  # 打印异常信息
+        print(f"Error in /chat endpoint: {e}")  # Print exception information
         raise HTTPException(status_code=500, detail=str(e))
 
 # ✅ **Test route**
