@@ -6,9 +6,9 @@ export default function Layout() {
   return (
     <Tabs
       screenOptions={{
-        headerShown: false, // 隐藏顶部标题栏
+        headerShown: false, 
       }}
-      initialRouteName="home" // 设置默认路由为 home
+      initialRouteName="home"
     >
       {/* Home tab */}
       <Tabs.Screen
