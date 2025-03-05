@@ -9,32 +9,32 @@ import {
   ActivityIndicator,
 } from "react-native";
 import axios from "axios";
-import { Ionicons } from "@expo/vector-icons"; // 使用图标库
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Home() {
   const [messages, setMessages] = useState<{ role: string; content: string }[]>(
     []
-  ); // 聊天记录
-  const [userInput, setUserInput] = useState(""); // 用户输入
-  const [isLoading, setIsLoading] = useState(false); // 加载状态
-  const scrollViewRef = useRef<ScrollView>(null); // 用于自动滚动
+  ); // Stores chat messages
+  const [userInput, setUserInput] = useState(""); // Stores user input
+  const [isLoading, setIsLoading] = useState(false); // Loading state for API calls
+  const scrollViewRef = useRef<ScrollView>(null); // Reference for scrolling to the bottom
 
-  // 发送消息到后端 API
+  // Send message to the backend API
   const sendMessage = async () => {
-    if (!userInput.trim()) return; // 如果输入为空，直接返回
+    if (!userInput.trim()) return; // Ignore empty input
 
     setIsLoading(true);
     const newMessages = [...messages, { role: "user", content: userInput }];
-    setMessages(newMessages); // 添加用户消息到聊天记录
-    setUserInput(""); // 清空输入框
+    setMessages(newMessages); // Add user message to chat history
+    setUserInput(""); // Clear input field
 
     try {
-      // 调用后端 API
+      // Call the backend API
       const response = await axios.post("http://localhost:8000/chat", {
         message: userInput,
       });
 
-      // 添加助手回复到聊天记录
+      // Add assistant's reply to chat history
       setMessages([
         ...newMessages,
         { role: "assistant", content: response.data.reply },
@@ -43,7 +43,7 @@ export default function Home() {
       console.error("Error:", error);
       let errorMessage = "Sorry, something went wrong.";
       if (error.response) {
-        // 从后端返回的错误信息
+        // Use error message from the backend if available
         errorMessage = error.response.data.detail || errorMessage;
       }
       setMessages([
@@ -52,11 +52,11 @@ export default function Home() {
       ]);
     } finally {
       setIsLoading(false);
-      scrollToBottom(); // 滚动到底部
+      scrollToBottom(); // Scroll to the bottom after sending the message
     }
   };
 
-  // 滚动到底部
+  // Scroll to the bottom of the chat window
   const scrollToBottom = () => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
   };
@@ -67,7 +67,7 @@ export default function Home() {
       <ScrollView
         style={styles.chatWindow}
         ref={scrollViewRef}
-        onContentSizeChange={scrollToBottom} // 内容变化时自动滚动
+        onContentSizeChange={scrollToBottom} // Auto-scroll when content changes
       >
         {messages.map((message, index) => (
           <View
@@ -89,9 +89,9 @@ export default function Home() {
           placeholder="Type your message..."
           value={userInput}
           onChangeText={setUserInput}
-          onSubmitEditing={sendMessage} // 按下回车发送消息
+          onSubmitEditing={sendMessage} // Send message on pressing enter
           editable={!isLoading}
-          placeholderTextColor="#7e57c2" // 浅紫色占位符
+          placeholderTextColor="#7e57c2"
         />
         <TouchableOpacity
           style={styles.sendButton}
@@ -113,14 +113,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#f3e5f5", // 浅紫色背景
+    backgroundColor: "#f3e5f5",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,
     textAlign: "center",
-    color: "#4a148c", // 深紫色文字
+    color: "#4a148c",
   },
   chatWindow: {
     flex: 1,
@@ -139,44 +139,40 @@ const styles = StyleSheet.create({
   },
   userBubble: {
     alignSelf: "flex-end",
-    backgroundColor: "#9c27b0", // 用户消息背景色（紫色）
+    backgroundColor: "#9c27b0",
   },
   assistantBubble: {
     alignSelf: "flex-start",
-    backgroundColor: "#fff", // 助手消息背景色
+    backgroundColor: "#fff",
   },
   messageText: {
     fontSize: 16,
-    color: "#4a148c", // 深紫色文字
+    color: "#4a148c",
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff", // 输入框背景色
+    backgroundColor: "#fff",
     borderRadius: 12,
     padding: 8,
     borderWidth: 1,
-    borderColor: "#d1c4e9", // 浅紫色边框
+    borderColor: "#d1c4e9",
   },
   input: {
     flex: 1,
     padding: 12,
-    borderWidth: 0, // 去掉边框
+    borderWidth: 0,
     borderRadius: 8,
     marginRight: 8,
-    backgroundColor: "#fff", // 输入框背景色
-    color: "#4a148c", // 深紫色文字
+    backgroundColor: "#fff",
+    color: "#4a148c",
   },
   sendButton: {
     padding: 12,
-    backgroundColor: "#9c27b0", // 发送按钮背景色（紫色）
+    backgroundColor: "#9c27b0",
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
     minWidth: 50,
-  },
-  sendButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
   },
 });
